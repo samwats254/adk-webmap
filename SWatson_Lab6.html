@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>My Google Map</title>
+        <style> /* best practice to set styles outside of html markup */
+                   #map{ /* sets map dimensions. #map is same as div id="map" but coded differently for CSS */
+                height:700px;
+                width:75%;
+                }
+        </style>
+</head>
+<body>
+      <h1>ADK High Peaks Region</h1>
+      <div id="map"></div> <!-- map element goes here -->
+
+      <script>
+        //create function to initialize map, which is called by the api src
+        function initMap(){
+
+    //Parameters for custom styled map
+		var styledMapType = new google.maps.StyledMapType(
+            [
+              {elementType: 'geometry', stylers: [{color: '#f2f2f2'}]},
+              {elementType: 'labels.text.fill', stylers: [{color: '#444444'}]},
+              {elementType: 'labels.text.stroke', stylers: [{color: '#f5f1e6'}]},
+              {
+                featureType: 'administrative',
+                elementType: 'geometry.stroke',
+                stylers: [{color: '#c9b2a6'}]
+              },
+              {
+                featureType: 'administrative.land_parcel',
+                elementType: 'geometry.stroke',
+                stylers: [{color: '#dcd2be'}]
+              },
+              {
+                featureType: 'administrative.land_parcel',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#ae9e90'}]
+              },
+              {
+                featureType: 'landscape.natural',
+                elementType: 'geometry',
+                stylers: [{color: '#eeeeee'}]
+              },
+              {
+                featureType: 'poi',
+                elementType: 'geometry',
+                stylers: [{color: '#dfd2ae'}]
+              },
+              {
+                featureType: 'poi',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#93817c'}]
+              },
+              {
+                featureType: 'poi.park',
+                elementType: 'geometry.fill',
+                stylers: [{color: '#548b54'}]
+              },
+              {
+                featureType: 'poi.park',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#447530'}]
+              },
+              {
+                featureType: 'road',
+                elementType: 'geometry',
+                stylers: [{color: '#f5f1e6'}]
+              },
+              {
+                featureType: 'road.arterial',
+                elementType: 'geometry',
+                stylers: [{color: '#fdfcf8'}]
+              },
+              {
+                featureType: 'road.highway',
+                elementType: 'geometry',
+                stylers: [{color: '#f8c967'}]
+              },
+              {
+                featureType: 'road.highway',
+                elementType: 'geometry.stroke',
+                stylers: [{color: '#e9bc62'}]
+              },
+              {
+                featureType: 'road.highway.controlled_access',
+                elementType: 'geometry',
+                stylers: [{color: '#e98d58'}]
+              },
+              {
+                featureType: 'road.highway.controlled_access',
+                elementType: 'geometry.stroke',
+                stylers: [{color: '#db8555'}]
+              },
+              {
+                featureType: 'road.local',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#806b63'}]
+              },
+              {
+                featureType: 'transit.line',
+                elementType: 'geometry',
+                stylers: [{color: '#dfd2ae'}]
+              },
+              {
+                featureType: 'transit.line',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#8f7d77'}]
+              },
+              {
+                featureType: 'transit.line',
+                elementType: 'labels.text.stroke',
+                stylers: [{color: '#ebe3cd'}]
+              },
+              {
+                featureType: 'transit.station',
+                elementType: 'geometry',
+                stylers: [{color: '#dfd2ae'}]
+              },
+              {
+                featureType: 'water',
+                elementType: 'geometry.fill',
+                stylers: [{color: '#aecfdc'}]
+              },
+              {
+                featureType: 'water',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#92998d'}]
+              }
+            ],
+            {name: 'My Style'}); 
+          
+        //create the map using variable name 'map'
+        var marcy = {lat: 44.112572, lng: -73.923493}; //assigns coordinates to variable 'marcy'
+        var adklodge = {lat: 44.182830, lng: -73.963796}; //assigns coordinates to variable 'adklodge'
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 44.182861, lng: -73.963027}, //assigns coordinates to the geographic center of the map
+          zoom: 9,
+      //declares what style of maps (default and custom) will be on the final product
+		  mapTypeControlOptions: {
+            mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain', 'My Style']
+          } ,
+      //turns labels off of map styles
+		  styles: [
+            {
+              featureType: 'administrative.locality',
+              elementType: 'labels',
+              stylers: [{ visibility: "off"}]
+            },
+            {
+              featureType: 'poi',
+              elementType: 'labels',
+              stylers: [{ visibility: "off"}]
+            },
+            {
+              featureType: 'poi',
+              elementType: 'labels',
+              stylers: [{ visibility: "off"}]
+            },
+            {
+              featureType: 'transit',
+              elementType: 'labels',
+              stylers: [{ visibility: "off"}]
+            },
+                        {
+              featureType: 'landscape',
+              elementType: 'labels',
+              stylers: [{ visibility: "off"}]
+            },
+            {
+              featureType: 'water',
+              elementType: 'labels',
+              stylers: [{ visibility: "off"}]
+            }
+          ]
+        });
+      
+        
+        // information windows for both map marker variables
+        var infowindow = new google.maps.InfoWindow({
+          content: "Mt. Marcy is the highest peak in NYS"
+          });
+
+        var infowindow2 = new google.maps.InfoWindow({
+            content: "The Adirondack Lodge: Starting point to several trail heards in the Adirondack high peaks region."
+          });
+
+
+        //creates markers for custom variables marcy and adklodge out of web hosted images
+        var image = 'https://drive.google.com/uc?export=download&id=1LdLt9XeUU_5K-hobGY2SYjTw5oO2Z8p5';
+        var marcy = new google.maps.Marker({
+          position: marcy,       
+          icon: image,
+          map: map,
+          });
+        var lodgeimage = 'https://drive.google.com/uc?export=download&id=17YIpY3hnRVpgPZ_jO9SW_E9iydKBD7BM';
+        var adklodge = new google.maps.Marker({
+          position: adklodge,
+          icon: lodgeimage,
+          map: map,          
+          });
+
+        // listener functions for both markers activate info windows on click
+        marcy.addListener('click', function() {
+          infowindow.open(map, marcy);
+          });
+        adklodge.addListener('click', function() {
+          infowindow2.open(map, adklodge);
+          });
+
+
+        //kml layer imported from web link
+        var adkregion = new google.maps.KmlLayer({
+          url: 'https://drive.google.com/uc?export=download&id=1P_m1uhzQuAQfSvFnGsx9s4uSfMzM6yMh',
+          suppressInfoWindows: true,
+          preserveViewport: true,
+          map: map
+        }); 
+		
+        
+        // Coordinates of ADK high peaks wilderness to use for polygon dataset
+        var coordinates = [
+          {lat: 44.209991, lng: -74.312426},
+          {lat: 44.173415, lng: -74.326248},
+          {lat: 44.155402, lng: -74.312980},
+          {lat: 44.129961, lng: -74.347301},
+          {lat: 44.092717, lng: -74.316250},
+          {lat: 43.995449, lng: -74.397566},
+          {lat: 43.985648, lng: -74.389613},
+          {lat: 44.011673, lng: -74.310502},
+          {lat: 44.064607, lng: -74.249532},
+          {lat: 43.988226, lng: -74.169764},
+          {lat: 44.039802, lng: -74.076981},
+          {lat: 44.041476, lng: -74.095127},
+          {lat: 44.073052, lng: -74.091475},
+          {lat: 44.072632, lng: -74.030256},
+          {lat: 44.057545, lng: -73.958717},
+          {lat: 44.033910, lng: -74.038672},
+          {lat: 44.001791, lng: -73.964660},
+          {lat: 44.163585, lng: -73.784153},
+          {lat: 44.261343, lng: -73.806808},
+          {lat: 44.217666, lng: -73.890989},
+          {lat: 44.229606, lng: -74.002146},
+          {lat: 44.259287, lng: -74.011024},
+          {lat: 44.283539, lng: -74.181852},
+          {lat: 44.233491, lng: -74.307359}
+          
+        ];
+
+        //Construct polygon
+        var adkHighPeaksRegion = new google.maps.Polygon({
+          paths: coordinates,
+          strokeColor: '#2d349a',
+          strokeOpacity: 0.90,
+          strokeWeight: 2.5,
+          fillColor: '#000000',
+          fillOpacity: 0.0,
+		  
+		});
+        
+    //assigns the polygon (adkHighPeaksRegion) to map
+		adkHighPeaksRegion.setMap(map); 
+
+		map.mapTypes.set('My Style', styledMapType);
+        map.setMapTypeId('My Style');
+       
+
+    
+		}
+        //activates the google map API with personal API key
+        </script>
+        <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDt2NIGgBYCVzb1j-cdzn5ZtMfnK_PIBJM&callback=initMap" 
+        type="text/javascript">
+
+		</script>  <!-- b/c contains initMap, which is a function that it tries to load -->
+</body>
+</html>
